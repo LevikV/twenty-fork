@@ -1,0 +1,8 @@
+# Конфиденциальные данные
+.env
+*.secret
+*.key
+
+# Docker volumes
+docker/data/
+docker/volumes/
