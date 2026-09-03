@@ -1,0 +1,23 @@
+# Stage: inject freshly built twenty-server + twenty-front into twenty:notify
+FROM twentycrm/twenty:notify
+
+USER root
+
+# Replace backend dist with freshly built
+RUN rm -rf /app/packages/twenty-server/dist
+COPY packages/twenty-server/dist /app/packages/twenty-server/dist
+
+# Apply our notification patches (they were removed by COPY above)
+COPY patches/notification.module.js /app/packages/twenty-server/dist/modules/notification/notification.module.js
+COPY patches/notification.gateway.js /app/packages/twenty-server/dist/modules/notification/notification.gateway.js
+COPY patches/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+COPY patches/modules.module.js /app/packages/twenty-server/dist/modules/modules.module.js
+
+# Replace frontend with freshly built (includes our DefaultLayout.tsx changes)
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY packages/twenty-front/build /app/packages/twenty-server/dist/front
+
+# Permissions
+RUN chown -R node:node /app/packages/twenty-server/dist
+
+USER node

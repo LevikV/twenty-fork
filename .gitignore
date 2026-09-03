@@ -6,3 +6,12 @@
 # Docker volumes
 docker/data/
 docker/volumes/
+
+# Артефакты сборки notify-образов (генерируются при сборке, см. README)
+build-context*/
+patches/
+deps/
+*.tar
+
+# Черновики
+index.html

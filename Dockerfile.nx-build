@@ -1,0 +1,9 @@
+# Stage: inject freshly built twenty-front into twenty:notify
+FROM twentycrm/twenty:notify
+
+USER root
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY packages/twenty-front/build /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node

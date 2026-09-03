@@ -1,0 +1,4 @@
+FROM twentycrm/twenty:notify
+# Replace frontend with our v2.24.1 build
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY packages/twenty-front/build /app/packages/twenty-server/dist/front

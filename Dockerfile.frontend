@@ -1,0 +1,8 @@
+# Stage: inject patched index.html into twenty:notify
+FROM twentycrm/twenty:notify
+
+USER root
+COPY index.html /app/packages/twenty-server/dist/front/index.html
+RUN chown node:node /app/packages/twenty-server/dist/front/index.html
+
+USER node

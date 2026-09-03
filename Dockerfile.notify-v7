@@ -1,0 +1,32 @@
+FROM twentycrm/twenty:v2.24.1
+USER root
+
+# Copy ws runtime deps
+COPY deps/@nestjs/websockets /app/node_modules/@nestjs/websockets
+COPY deps/@nestjs/platform-socket.io /app/node_modules/@nestjs/platform-socket.io
+COPY deps/socket.io /app/node_modules/socket.io
+COPY deps/engine.io /app/node_modules/engine.io
+COPY deps/engine.io-parser /app/node_modules/engine.io-parser
+COPY deps/socket.io-parser /app/node_modules/socket.io-parser
+COPY deps/socket.io-adapter /app/node_modules/socket.io-adapter
+COPY deps/@socket.io /app/node_modules/@socket.io
+COPY deps/ws /app/node_modules/ws
+COPY deps/cors /app/node_modules/cors
+COPY deps/base64id /app/node_modules/base64id
+
+# Replace frontend with our v2.24.1 build
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY front /app/packages/twenty-server/dist/front
+
+# Backend patches
+RUN mkdir -p /app/packages/twenty-server/dist/modules/notification
+COPY patches/notification.module.js /app/packages/twenty-server/dist/modules/notification/notification.module.js
+COPY patches/notification.gateway.js /app/packages/twenty-server/dist/modules/notification/notification.gateway.js
+COPY patches/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+COPY patches/modules.module.js /app/packages/twenty-server/dist/modules/modules.module.js
+
+RUN chown -R node:node /app/packages/twenty-server/dist/modules/notification/ \
+    && chown node:node /app/packages/twenty-server/dist/modules/modules.module.js \
+    && chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node
