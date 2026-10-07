@@ -1,0 +1,10 @@
+FROM twentycrm/twenty:notify-v41
+USER root
+
+# Только доработка «Правила записи»: фронт, deps и патчи уведомлений уже лежат
+# в базовом образе v41. Копируем лишь наш модуль и правленый хук-модуль,
+# поэтому слой образа крошечный (--chown вместо RUN chown — без лишнего слоя).
+COPY --chown=node:node patches/modules/record-rules /app/packages/twenty-server/dist/modules/record-rules
+COPY --chown=node:node patches/workspace-query-hook.module.js /app/packages/twenty-server/dist/engine/api/graphql/workspace-query-runner/workspace-query-hook/workspace-query-hook.module.js
+
+USER node

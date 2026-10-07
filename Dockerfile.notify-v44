@@ -1,0 +1,10 @@
+FROM twentycrm/twenty:notify-v43
+USER root
+
+# Только доработка «Правила записи» (этап 3.3 — заморозка записи в закрытой стадии):
+# пересобранный модуль record-rules + модуль-регистратор хуков. Фронт, deps и
+# патчи уведомлений уже лежат в базовом образе v43, поэтому слой крошечный.
+COPY --chown=node:node patches/modules/record-rules /app/packages/twenty-server/dist/modules/record-rules
+COPY --chown=node:node patches/workspace-query-hook.module.js /app/packages/twenty-server/dist/engine/api/graphql/workspace-query-runner/workspace-query-hook/workspace-query-hook.module.js
+
+USER node
