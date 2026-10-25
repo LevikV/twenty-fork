@@ -1,0 +1,11 @@
+# Этап 4 центра уведомлений: колокольчик со счётчиком непрочитанных
+# Собранный фронт кладём поверх рабочего образа notify-v46 (бэкенд-патчи сохраняются)
+FROM twentycrm/twenty:notify-v46
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v47/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node
