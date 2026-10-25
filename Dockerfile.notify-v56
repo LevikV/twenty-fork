@@ -1,0 +1,10 @@
+# v56: сервер — порции уведомлений, общий счётчик непрочитанных, «прочитать все»
+FROM twentycrm/twenty:notify-v50
+
+USER root
+
+COPY patches/notify-v56/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+COPY patches/notify-v56/notification.module.js /app/packages/twenty-server/dist/modules/notification/notification.module.js
+RUN chown node:node /app/packages/twenty-server/dist/modules/notification/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.module.js
+
+USER node
