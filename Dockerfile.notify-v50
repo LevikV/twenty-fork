@@ -1,0 +1,11 @@
+# v50: серверные эндпоинты /api/notify/mine и /api/notify/read
+# Фронт пока базовый (из v46) — сначала проверяем, что сервер стартует с JwtAuthGuard
+FROM twentycrm/twenty:notify-v46
+
+USER root
+
+COPY patches/notify-v50/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+COPY patches/notify-v50/notification.module.js /app/packages/twenty-server/dist/modules/notification/notification.module.js
+RUN chown node:node /app/packages/twenty-server/dist/modules/notification/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.module.js
+
+USER node
