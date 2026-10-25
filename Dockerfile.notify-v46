@@ -1,0 +1,8 @@
+FROM twentycrm/twenty:notify-v45
+USER root
+
+# Центр уведомлений, подэтап 2.4: запись истории в объект «Уведомления».
+# Меняется только notification.controller.js — остальное берётся из v45.
+COPY --chown=node:node patches/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+USER node
