@@ -1,0 +1,10 @@
+# v51: фронт с колокольчиком, работающим через /api/notify/mine (v50)
+FROM twentycrm/twenty:notify-v50
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v51/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node

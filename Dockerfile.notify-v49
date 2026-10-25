@@ -1,0 +1,10 @@
+# v49: колокольчик с защитой от падения (guard по метаданным + ErrorBoundary)
+FROM twentycrm/twenty:notify-v46
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v49/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node

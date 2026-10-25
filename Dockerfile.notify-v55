@@ -1,0 +1,10 @@
+# v55: иконка 15px, панель уведомлений рядом с иконкой поверх навигации
+FROM twentycrm/twenty:notify-v50
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v55/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node

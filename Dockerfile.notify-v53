@@ -1,0 +1,10 @@
+# v53: колокольчик только на сессионной cookie (без Bearer)
+FROM twentycrm/twenty:notify-v50
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v53/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node
