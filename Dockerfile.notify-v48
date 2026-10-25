@@ -1,0 +1,10 @@
+# v48: колокольчик перенесён в PageCardHeader (реальная шапка страниц)
+FROM twentycrm/twenty:notify-v47
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v48/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node
