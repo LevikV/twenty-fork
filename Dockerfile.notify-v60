@@ -1,0 +1,15 @@
+# v58: колокольчик понимает ссылки на страницы приложения (/page/<uuid>).
+# Правка двух файлов поверх notify-v57, без пересборки фронта:
+#   1) серверный контроллер /api/notify — parseLink разбирает /page/<uuid> → linkedObjectName="page"
+#   2) собранный фронт — клик по уведомлению с объектом "page" уходит на /page/<id>
+FROM twentycrm/twenty:notify-v59
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY front /app/packages/twenty-server/dist/front
+COPY patches/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+RUN chown -R node:node /app/packages/twenty-server/dist/front /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+USER node
