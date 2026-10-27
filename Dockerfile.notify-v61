@@ -1,0 +1,17 @@
+# v61: счётчик непрочитанных у пункта «Центр коммуникации» в левом меню.
+# База — notify-v59 (рабочая). Патчи:
+#   1) серверный контроллер /api/notify — добавлен GET /api/notify/chat-unread
+#      (сумма непрочитанных по чатам текущего пользователя);
+#   2) собранный фронт — nav-badge.js дорисовывает цифру у пункта меню.
+FROM twentycrm/twenty:notify-v59
+
+USER root
+
+# Фронт берём из build-context-v61 (копия v59 + nav-badge.js), он целиком заменяет dist/front.
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY front /app/packages/twenty-server/dist/front
+COPY patches/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+RUN chown -R node:node /app/packages/twenty-server/dist/front /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+USER node
