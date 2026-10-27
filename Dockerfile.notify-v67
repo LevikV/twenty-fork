@@ -1,0 +1,17 @@
+# v67: кнопка «Центр коммуникации» со счётчиком непрочитанных слева от колокольчика.
+# База — notify-v59 (рабочая). Патчи:
+#   1) серверный контроллер /api/notify — GET /api/notify/chat-unread (сумма непрочитанных);
+#   2) бандл фронта — кнопка с data-testid="chat-bell-button" рядом с колокольчиком;
+#   3) nav-badge.js — подставляет цифру в бейдж этой кнопки.
+FROM twentycrm/twenty:notify-v59
+
+USER root
+
+# Фронт из build-context-v67 (v59 + кнопка чата в патче бандла, бейдж и контроллер).
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY front /app/packages/twenty-server/dist/front
+COPY patches/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+RUN chown -R node:node /app/packages/twenty-server/dist/front /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+USER node
