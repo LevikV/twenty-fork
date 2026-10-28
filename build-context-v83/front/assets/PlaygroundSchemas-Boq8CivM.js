@@ -1,0 +1,1 @@
+import{t as a}from"./isDefined-Dtu5EYqP-_d6Dqdoe.js";import{t as r}from"./createAtomState-6gI79rwg.js";var n=r({key:"playgroundApiKeyState",defaultValue:null}),p=(t,e=0)=>a(t)&&new Date(t.expiresAt).getTime()-Date.now()>e,A=(function(t){return t.METADATA="metadata",t.CORE="core",t})({});export{p as n,n as r,A as t};

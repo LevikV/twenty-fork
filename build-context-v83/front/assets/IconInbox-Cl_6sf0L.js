@@ -1,0 +1,1 @@
+import{t as a}from"./createReactComponent-CmedsHsX.js";var o=[["path",{d:"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12",key:"svg-0"}],["path",{d:"M4 13h3l3 3h4l3 -3h3",key:"svg-1"}]],e=a("outline","inbox","Inbox",o);export{e as t};

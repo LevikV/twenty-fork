@@ -1,0 +1,1 @@
+import{t as e}from"./createAtomSelector-CM7lGGNw.js";import{n as a}from"./metadataStoreState-DBJES_Hf.js";var n=e({key:"navigationMenuItemsSelector",get:({get:t})=>t(a,"navigationMenuItems").current});export{n as t};

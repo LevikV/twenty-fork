@@ -1,0 +1,10 @@
+import{t as u}from"./jsx-runtime-BmDUFisN.js";import{l as p}from"./theme-constants-C0dRLi4g-DPr6G-vE.js";import{t as e}from"./dist-Cg5OofxW.js";import{t as v}from"./IconUserPlus-BzPl7gMe.js";import{i as A}from"./surfaces-D3IxB2EF-DcPk5ns8.js";import{t as r}from"./typography-Cdw1VXRg-DNidcY8R.js";import{d}from"./layout-VPPc6dU1-BLkr9yoB.js";import{t as b}from"./lib-C3IpGLsk.js";import{t as j}from"./useMutation-BKdjtPjp.js";import{t as s}from"./graphql-I-6Awo9B.js";import{t as l}from"./SettingsAccountsVisibilityIcon-mYjFhqNs.js";import{t as y}from"./SettingsRadioSettingsCard-CedkLjuU.js";import{t as f}from"./SettingsOptionCardContentToggle-BTymgd2f.js";var t=u(),g=b`
+  mutation UpdateCalendarChannel($input: UpdateCalendarChannelInput!) {
+    updateCalendarChannel(input: $input) {
+      id
+      visibility
+      isContactAutoCreationEnabled
+      contactAutoCreationPolicy
+    }
+  }
+`,c=p("div")({name:"StyledCardMediaContainer",class:"s13a7ob6",propsAsIs:!1}),x=[{title:{id:"wqF3jl"},description:{id:"MHLapp"},value:s.SHARE_EVERYTHING,cardMedia:(0,t.jsx)(c,{children:(0,t.jsx)(l,{subject:"active",body:"active"})})},{title:{id:"6GBt0m"},description:{id:"zii2Qj"},value:s.METADATA,cardMedia:(0,t.jsx)(c,{children:(0,t.jsx)(l,{subject:"active",body:"inactive"})})}],h=({onChange:i,value:n=s.SHARE_EVERYTHING})=>(0,t.jsx)(y,{name:"event-visibility",options:x,value:n,onChange:i}),E=p("div")({name:"StyledDetailsContainer",class:"sxvfjl",propsAsIs:!1}),Y=({calendarChannel:i})=>{const[n]=j(g),o=a=>{n({variables:{input:{id:i.id,update:a}}})},C=a=>{o({visibility:a})},m=a=>{o({isContactAutoCreationEnabled:a})};return(0,t.jsxs)(E,{children:[(0,t.jsxs)(d,{children:[(0,t.jsx)(r,{title:e._({id:"poC90w"}),description:e._({id:"bQkkFU"})}),(0,t.jsx)(h,{value:i.visibility,onChange:C})]}),(0,t.jsxs)(d,{children:[(0,t.jsx)(r,{title:e._({id:"Y2y0mC"}),description:e._({id:"YRT7ZW"})}),(0,t.jsx)(A,{rounded:!0,children:(0,t.jsx)(f,{Icon:v,title:e._({id:"2zJkmL"}),description:e._({id:"lgw3U4"}),checked:i.isContactAutoCreationEnabled,onChange:()=>{m(!i.isContactAutoCreationEnabled)}})})]})]})};export{Y as t};

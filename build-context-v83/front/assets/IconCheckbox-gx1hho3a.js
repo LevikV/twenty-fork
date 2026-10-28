@@ -1,0 +1,1 @@
+import{t as e}from"./createReactComponent-CmedsHsX.js";var o=[["path",{d:"M9 11l3 3l8 -8",key:"svg-0"}],["path",{d:"M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9",key:"svg-1"}]],t=e("outline","checkbox","Checkbox",o);export{t};

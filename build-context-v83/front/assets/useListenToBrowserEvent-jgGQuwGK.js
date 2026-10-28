@@ -1,0 +1,1 @@
+import{o as n}from"./chunk-ChpBd9eV.js";import{t as s}from"./react-M6yZRsSc.js";var a=n(s(),1),w=({onBrowserEvent:r,eventName:t})=>{(0,a.useEffect)(()=>{const e=o=>{const i=o.detail;r(i)};return window.addEventListener(t,e),()=>{window.removeEventListener(t,e)}},[t,r])};export{w as t};

@@ -1,0 +1,1 @@
+var y=(function(M){return M.SYSTEM="SYSTEM",M.MONTH_FIRST="MMM d, yyyy",M.DAY_FIRST="d MMM, yyyy",M.YEAR_FIRST="yyyy MMM d",M})({}),S=(function(M){return M.SYSTEM="SYSTEM",M.HOUR_24="HH:mm",M.HOUR_12="h:mm aa",M})({});export{y as n,S as t};

@@ -1,0 +1,1 @@
+import{r as t}from"./useAvailableComponentInstanceIdOrThrow-BJxWokO_.js";import{t as e}from"./PageLayoutComponentInstanceContext-DInD7Gt9.js";var a=t({key:"pageLayoutEditingWidgetIdComponentState",defaultValue:null,componentInstanceContext:e});export{a as t};

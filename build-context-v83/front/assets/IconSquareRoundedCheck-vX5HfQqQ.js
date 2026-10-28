@@ -1,0 +1,1 @@
+import{t as e}from"./createReactComponent-CmedsHsX.js";var c=[["path",{d:"M9 12l2 2l4 -4",key:"svg-0"}],["path",{d:"M12 3c7.2 0 9 1.8 9 9c0 7.2 -1.8 9 -9 9c-7.2 0 -9 -1.8 -9 -9c0 -7.2 1.8 -9 9 -9",key:"svg-1"}]],a=e("outline","square-rounded-check","SquareRoundedCheck",c);export{a as t};

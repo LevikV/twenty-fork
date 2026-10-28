@@ -1,0 +1,1 @@
+import{o as s}from"./react-BWmhvO0Y.js";import{r as i}from"./utils-D1Kbz2PN.js";import{t as p}from"./isDefined-Dtu5EYqP-_d6Dqdoe.js";import{t as c}from"./buildGetHelper-COsfWD8o.js";var A=({key:o,get:a,areEqual:r})=>{const e=s(t=>a({get:c(t)})),m=p(r)?i(e,t=>t,r):e;return m.debugLabel=o,{type:"Selector",key:o,atom:m}};export{A as t};

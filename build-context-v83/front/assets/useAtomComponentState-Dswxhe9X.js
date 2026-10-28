@@ -1,0 +1,1 @@
+import{n as a}from"./react-BWmhvO0Y.js";import{i as r,t as s}from"./useAvailableComponentInstanceIdOrThrow-BJxWokO_.js";var c=(t,o)=>{const n=r.get(t.key);if(!n)throw new Error(`Instance context for key "${t.key}" is not defined`);const e=s(n,o);return a(t.atomFamily({instanceId:e}))};export{c as t};

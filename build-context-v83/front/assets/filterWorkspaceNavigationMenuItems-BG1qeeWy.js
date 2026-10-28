@@ -1,0 +1,1 @@
+import{t as e}from"./isDefined-Dtu5EYqP-_d6Dqdoe.js";import{t as r}from"./createAtomState-6gI79rwg.js";var i=r({key:"navigationMenuItemsDraftState",defaultValue:null}),s=t=>t.filter(a=>!e(a.userWorkspaceId));export{i as n,s as t};

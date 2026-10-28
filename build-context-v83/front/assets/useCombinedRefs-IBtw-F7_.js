@@ -1,0 +1,1 @@
+import{t}from"./build-CngeiE9P.js";import{t as o}from"./isDefined-Dtu5EYqP-_d6Dqdoe.js";var f=t(),n=(...e)=>i=>{for(const r of e)(0,f.isFunction)(r)?r(i):o(r)&&"current"in r&&(r.current=i)},m=(...e)=>n(...e);export{m as t};

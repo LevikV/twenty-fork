@@ -1,0 +1,1 @@
+import{o as a}from"./chunk-ChpBd9eV.js";import{t as n}from"./react-M6yZRsSc.js";import{i as s,t as i}from"./useAvailableComponentInstanceIdOrThrow-BJxWokO_.js";var m=a(n(),1),f=(t,r)=>{const e=s.get(t.key);if(!e)throw new Error(`Instance context for key "${t.key}" is not defined`);const o=i(e,r);return(0,m.useMemo)(()=>t.atomFamily({instanceId:o}),[t,o])};export{f as t};

@@ -1,0 +1,1 @@
+import{t as e}from"./build-CngeiE9P.js";var i=e(),s=(r,t)=>{if((0,i.isNonEmptyString)(r)&&r!=="{}"){let a;try{a=JSON.parse(r)}catch{console.warn(t??"Failed to parse blocknote body"),console.warn(r)}return!(0,i.isArray)(a)||a.length===0?void 0:a}};export{s as t};

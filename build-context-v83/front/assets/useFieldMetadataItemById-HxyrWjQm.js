@@ -1,0 +1,1 @@
+import{t as e}from"./useAtomStateValue-fOI3coSn.js";import{t as a}from"./objectMetadataItemsSelector-KcVxH0zZ.js";import{t as m}from"./getFieldMetadataItemById-DSydHDHn.js";var s=t=>m({fieldMetadataId:t,objectMetadataItems:e(a)});export{s as t};

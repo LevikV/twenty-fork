@@ -1,0 +1,1 @@
+import{o}from"./chunk-ChpBd9eV.js";import{t as r}from"./react-M6yZRsSc.js";import{t as e}from"./useAtomStateValue-fOI3coSn.js";import{t as s}from"./currentWorkspaceState-CMyFKDun.js";import{Hn as m}from"./index-BTwh_iuN.js";var p=o(r(),1),l=()=>{const t=e(s)?.workspaceCustomApplication?.id;return(0,p.useCallback)(a=>m(a,t),[t])};export{l as t};

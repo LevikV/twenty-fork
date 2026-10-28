@@ -1,0 +1,1 @@
+import{t as o}from"./createReactComponent-CmedsHsX.js";var a=[["path",{d:"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0",key:"svg-0"}],["path",{d:"M12 12l-3 2",key:"svg-1"}],["path",{d:"M12 7v5",key:"svg-2"}]],e=o("outline","clock-hour-8","ClockHour8",a);export{e as t};

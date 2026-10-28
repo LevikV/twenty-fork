@@ -1,0 +1,1 @@
+import{a as o,i as a,n,r as t,t as I}from"./IconVideo-tUr6qfzK.js";import{t as i}from"./IconFile-Oq0HPu5f.js";import{t as r}from"./IconPhoto-i9PAz0UY.js";import{t as e}from"./IconTable-CcBfFGdI.js";var T={ARCHIVE:a,AUDIO:t,IMAGE:r,PRESENTATION:n,SPREADSHEET:e,TEXT_DOCUMENT:o,VIDEO:I,OTHER:i};export{T as t};

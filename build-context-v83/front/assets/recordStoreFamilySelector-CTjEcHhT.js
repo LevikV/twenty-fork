@@ -1,0 +1,1 @@
+import{t as m}from"./recordStoreFamilyState-CRjezABK.js";import{t as c}from"./createAtomWritableFamilySelector-Be7U0Qq6.js";var l=c({key:"recordStoreFamilySelector",get:({recordId:t,fieldName:r})=>({get:e})=>e(m,t)?.[r],set:({recordId:t,fieldName:r})=>({set:e},o)=>{e(m,t,a=>a?{...a,[r]:o}:{[r]:o})}});export{l as t};

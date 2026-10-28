@@ -1,0 +1,1 @@
+var e=o=>(n,p)=>n.type==="ComponentState"||n.type==="ComponentFamilyState"?o(n.atomFamily(p)):n.type==="ComponentSelector"||n.type==="ComponentFamilySelector"?o(n.selectorFamily(p)):n.type==="FamilyState"?o(n.atomFamily(p)):n.type==="FamilySelector"?o(n.selectorFamily(p)):o(n.atom);export{e as t};

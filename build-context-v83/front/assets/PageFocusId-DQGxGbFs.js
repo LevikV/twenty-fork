@@ -1,0 +1,1 @@
+var i=(function(e){return e.Settings="settings",e.WorkspaceActivation="workspace-activation",e.SignInUp="sign-in-up",e.CreateProfile="create-profile",e.InviteTeam="invite-team",e.SyncEmail="sync-email",e.PlanRequired="plan-required",e.RecordShowPage="record-show-page",e.RecordIndex="record-index",e.PageLayoutPage="page-layout-page",e})({});export{i as t};

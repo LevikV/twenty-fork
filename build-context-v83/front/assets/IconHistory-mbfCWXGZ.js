@@ -1,0 +1,1 @@
+import{t}from"./createReactComponent-CmedsHsX.js";var o=[["path",{d:"M12 8l0 4l2 2",key:"svg-0"}],["path",{d:"M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5",key:"svg-1"}]],e=t("outline","history","History",o);export{e as t};

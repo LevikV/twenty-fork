@@ -1,0 +1,1 @@
+import{t as s}from"./jsx-runtime-BmDUFisN.js";import{l as n}from"./theme-constants-C0dRLi4g-DPr6G-vE.js";import{r as o}from"./dist-C0k9q2wC.js";var e=s(),a=n("button")({name:"StyledSkipButton",class:"s1ybqc22",propsAsIs:!1}),l=({onClick:t,disabled:r})=>{const{i18n:i,_:u}=o();return(0,e.jsx)(a,{type:"button",onClick:t,disabled:r,children:i._({id:"6Uau97"})})};export{l as t};

@@ -1,0 +1,1 @@
+import{t as a}from"./dist-Cg5OofxW.js";import{_n as t}from"./index-BTwh_iuN.js";var _=(r,e)=>e>0?t.FAILED:r>0?t.BEHIND:t.UP_TO_DATE,g=(r,e,s)=>e>0&&r>0?a._({id:"8ob0vY",values:{0:e+r}}):e>0?a._({id:"nRKZKb",values:{failedCount:e}}):r>0?a._({id:"y9covz",values:{behindCount:r}}):s;export{_ as n,g as t};

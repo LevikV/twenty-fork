@@ -1,0 +1,1 @@
+import"./get-system-view-universal-identifier.util-CQOCVEOH-CFmublHO.js";import{t as e}from"./isDefined-Dtu5EYqP-_d6Dqdoe.js";var n=r=>e(r?.universalIdentifier)&&r.universalIdentifier==="20202020-64aa-4b6f-b003-9c74b97cee20";export{n as t};

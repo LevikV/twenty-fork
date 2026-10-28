@@ -1,0 +1,9 @@
+import{o as c}from"./chunk-ChpBd9eV.js";import{t as f}from"./jsx-runtime-BmDUFisN.js";import{t as I}from"./react-M6yZRsSc.js";import{l as d,s as o}from"./theme-constants-C0dRLi4g-DPr6G-vE.js";import{t as _}from"./isDefined-Dtu5EYqP-_d6Dqdoe.js";import{N as b,a as x}from"./react-Bt7Je5DD.js";import{Di as S}from"./index-BTwh_iuN.js";import{n as $}from"./openNavigationMenuItemFolderIdsState-DVN1lQ9a.js";import{n as T,t as O}from"./getDndKitDropTargetId-DKf7xGpg.js";var m=f(),u=c(I(),1),y=()=>({$compact:r})=>r?0:o.spacing[2],N=()=>({$highlightPosition:r})=>r==="top"?`
+      top: 0;
+      border-radius: 0 0 ${o.border.radius.sm}
+        ${o.border.radius.sm};
+      `:`
+      bottom: 0;
+      border-radius: ${o.border.radius.sm}
+        ${o.border.radius.sm} 0 0;
+      `,A=d("div")({name:"StyledDropTarget",class:"snnr98n",propsAsIs:!1,vars:{"snnr98n-0":[y()],"snnr98n-1":[N()]}}),U=({folderId:r,index:t,sectionId:a,children:e,compact:s=!1,dropTargetIdOverride:i,highlightPosition:v="bottom"})=>{const{activeDropTargetId:g,forbiddenDropTargetId:l}=(0,u.useContext)($),n=i??`${a}-${r??"orphan"}-${t}`,D=g===n,p=l===n;return(0,m.jsx)(A,{$compact:s,$highlightPosition:v,"data-drag-over":D&&!p?"true":void 0,"data-drop-forbidden":p?"true":void 0,children:e})},C=()=>({$empty:r})=>r?`min-height: ${o.spacing[2]};`:"",h=d("div")({name:"StyledSlotWrapper",class:"s4u41xg",propsAsIs:!1,vars:{"s4u41xg-0":[C()]}}),j=1,V=({droppableId:r,index:t,children:a,disabled:e=!1,collisionPriority:s=j})=>{const{ref:i}=x({id:O(r,t),disabled:e,collisionPriority:s,collisionDetector:b,data:{droppableId:r,index:t}});return(0,m.jsx)(h,{ref:i,$empty:a==null||Array.isArray(a)&&a.length===0,children:a})},W=r=>{const{sourceDroppableId:t}=(0,u.useContext)(S);return _(t)?t==="add-to-nav-source"?!r:T({navigationMenuItemSection:"workspace",droppableId:t})!==r:!1};export{V as n,U as r,W as t};

@@ -1,0 +1,1 @@
+import{sn as p}from"./graphql-CCxCy0BQ.js";import{t as s}from"./useQuery-BC4nwFZk.js";var i=({universalIdentifiers:a}={})=>{const{data:r,loading:e,error:t}=s(p,{variables:{universalIdentifiers:a}});return{data:r?.findManyMarketplaceApps??[],isLoading:e,error:t}};export{i as t};

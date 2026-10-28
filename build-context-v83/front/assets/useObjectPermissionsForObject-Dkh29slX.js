@@ -1,0 +1,1 @@
+import{o as s}from"./chunk-ChpBd9eV.js";import{t}from"./react-M6yZRsSc.js";import{n as o,t as i}from"./useObjectPermissions-D7ohHxW1.js";var m=s(t(),1),b=r=>{const{objectPermissionsByObjectMetadataId:e}=i();return(0,m.useMemo)(()=>o(e,r),[e,r])};export{b as t};

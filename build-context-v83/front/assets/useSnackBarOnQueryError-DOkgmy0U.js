@@ -1,0 +1,1 @@
+import{o as t}from"./chunk-ChpBd9eV.js";import{t as e}from"./react-M6yZRsSc.js";import{l as s}from"./errors-CNNrflUJ.js";import{t as m}from"./useSnackBar-OFVoWMWI.js";var i=t(e(),1),f=(r,a)=>{const{enqueueErrorSnackBar:o}=m();(0,i.useEffect)(()=>{r&&o(a?{message:a}:s.is(r)?{apolloError:r}:{message:r.message})},[r,o,a])};export{f as t};

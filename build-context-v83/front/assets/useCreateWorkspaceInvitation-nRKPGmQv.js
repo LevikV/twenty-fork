@@ -1,0 +1,1 @@
+import{t as a}from"./useSnackBar-OFVoWMWI.js";import{Kr as e,or as s}from"./graphql-CCxCy0BQ.js";import{t as i}from"./useMutation-BKdjtPjp.js";var v=()=>{const[t]=i(e),{enqueueErrorSnackBar:n}=a();return{sendInvitation:async r=>await t({variables:r,refetchQueries:[s],onError:o=>{n({apolloError:o})}})}};export{v as t};
