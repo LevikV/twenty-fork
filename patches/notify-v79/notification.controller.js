@@ -398,6 +398,49 @@ let NotificationController = class NotificationController {
             }
         }
     }
+    async openChat(body, request) {
+        const memberId = request ? request.workspaceMemberId : null;
+        const chatId = body && typeof body.chatId === "string" ? body.chatId : null;
+        if (!memberId || !chatId) {
+            return {
+                ok: false
+            };
+        }
+        const pool = getPool();
+        if (!pool) {
+            return {
+                ok: false
+            };
+        }
+        let client = null;
+        try {
+            client = await pool.connect();
+            const schema = await resolveSchema(client);
+            if (!schema) {
+                return {
+                    ok: false
+                };
+            }
+            const result = await client.query('UPDATE "' + schema + '"."_chatParticipant" SET "otkrytChatId" = $1 WHERE "chatId" = $2 AND "polzovatelId" = $3 AND "deletedAt" IS NULL', [
+                chatId + "|" + Date.now(),
+                chatId,
+                memberId
+            ]);
+            return {
+                ok: true,
+                updated: result.rowCount || 0
+            };
+        } catch (error) {
+            console.error("[notify-open-chat] failed:", error && error.message ? error.message : error);
+            return {
+                ok: false
+            };
+        } finally {
+            if (client) {
+                client.release();
+            }
+        }
+    }
     async chatUnread(request) {
         const memberId = request ? request.workspaceMemberId : null;
         const pool = getPool();
@@ -453,7 +496,7 @@ let NotificationController = class NotificationController {
                     items: []
                 };
             }
-            const result = await client.query('SELECT c.id, c.name, c."posledneeSoobshchenie" AS preview, c."vremyaPoslednego" AS at, p."neprochitano" AS unread, ' + 't."sdelkaOpportunityId" AS opportunity, t."sdelkaRemontOborudovaniyaId" AS remont, t."sdelkaTenderId" AS tender, t."sdelkaZapravkaKartridzheyId" AS zapravka, t."zadachaId" AS task ' + 'FROM "' + schema + '"."_chat" c ' + 'JOIN "' + schema + '"."_chatParticipant" p ON p."chatId" = c.id ' + 'LEFT JOIN "' + schema + '"."_chatTarget" t ON t."chatId" = c.id ' + 'WHERE p."polzovatelId" = $1 AND p."deletedAt" IS NULL AND c."deletedAt" IS NULL AND p."neprochitano" > 0 ' + 'ORDER BY c."vremyaPoslednego" DESC NULLS LAST LIMIT 10', [
+            const result = await client.query('SELECT c.id, c.name, c."posledneeSoobshchenie" AS preview, c."vremyaPoslednego" AS at, p."neprochitano" AS unread, ' + 't."sdelkaOpportunityId" AS opportunity, t."sdelkaRemontOborudovaniyaId" AS remont, t."sdelkaTenderId" AS tender, t."sdelkaZapravkaKartridzheyId" AS zapravka, t."zadachaId" AS task ' + 'FROM "' + schema + '"."_chat" c ' + 'JOIN "' + schema + '"."_chatParticipant" p ON p."chatId" = c.id ' + 'LEFT JOIN LATERAL (SELECT COALESCE((SELECT s."svyazkaId" FROM "' + schema + '"."_soobshchenie" s WHERE s."chatId" = c.id AND s."svyazkaId" IS NOT NULL AND s."deletedAt" IS NULL ORDER BY s."createdAt" DESC LIMIT 1), (SELECT ct.id FROM "' + schema + '"."_chatTarget" ct WHERE ct."chatId" = c.id LIMIT 1)) AS target_id) lt ON TRUE ' + 'LEFT JOIN "' + schema + '"."_chatTarget" t ON t.id = lt.target_id ' + 'WHERE p."polzovatelId" = $1 AND p."deletedAt" IS NULL AND c."deletedAt" IS NULL AND p."neprochitano" > 0 ' + 'ORDER BY c."vremyaPoslednego" DESC NULLS LAST LIMIT 10', [
                 memberId
             ]);
             return {
@@ -567,6 +610,17 @@ _ts_decorate([
     ]),
     _ts_metadata("design:returntype", void 0)
 ], NotificationController.prototype, "chatUnread", null);
+_ts_decorate([
+    (0, _common.Post)('open-chat'),
+    (0, _common.UseGuards)(_jwtauthguard.JwtAuthGuard),
+    _ts_param(0, (0, _common.Body)()),
+    _ts_param(1, (0, _common.Req)()),
+    _ts_metadata("design:paramtypes", [
+        Object,
+        Object
+    ]),
+    _ts_metadata("design:returntype", void 0)
+], NotificationController.prototype, "openChat", null);
 NotificationController = _ts_decorate([
     (0, _common.Controller)('api/notify'),
     _ts_metadata("design:type", Function),

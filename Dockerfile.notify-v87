@@ -1,0 +1,15 @@
+# v87: кнопки «Центр коммуникации» и «Уведомления» перенесены в левую
+# навигационную панель — в её верхнюю строку, слева от иконки поиска
+# (NavigationDrawerHeader), как было в прежней вклейке в бандл.
+# Панели открываются в портале с фиксированными координатами, поэтому
+# их не обрезает навигационная панель (overflow: hidden).
+# База — notify-v86 (морф-фильтр + прочие доработки на месте).
+FROM twentycrm/twenty:notify-v86
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v87/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node

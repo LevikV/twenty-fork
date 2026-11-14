@@ -1,0 +1,18 @@
+# v91: клик по диалогу во всплывашке ставит цель открытия на сервере.
+# Компонент «Центра коммуникации» живёт в блоб-iframe и адрес страницы не видит:
+# он спрашивает /chat-open-target. Раньше цель появлялась только после пуша
+# (chatParticipant.otkrytChatId, TTL 2 мин), поэтому клик из списка «Сообщения»
+# открывал центр без активного чата.
+# Добавлен POST /api/notify/open-chat, фронт вызывает его перед переходом.
+FROM twentycrm/twenty:notify-v90
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v91/front /app/packages/twenty-server/dist/front
+COPY patches/notify-v79/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+RUN chown -R node:node /app/packages/twenty-server/dist/front \
+    /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+USER node

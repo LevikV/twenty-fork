@@ -1,0 +1,16 @@
+# v88: восстановлен текст пуш-уведомлений и поведение badge-событий.
+# В патченном бандле v83 обработчик socket 'notify' собирал сообщение из
+# title + text, пропускал события с badge:true (они только обновляют счётчики),
+# отмечал уведомление прочитанным при переходе и открывал запись в боковой
+# панели. После пересборки фронта из исходников этот код потерялся —
+# отсюда пустые пуш-сообщения. Теперь логика в исходниках DefaultLayout.tsx.
+# База — notify-v87.
+FROM twentycrm/twenty:notify-v87
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v88/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node

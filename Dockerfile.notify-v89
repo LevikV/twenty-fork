@@ -1,0 +1,14 @@
+# v89: клик по строке в панели «Сообщения» всегда открывает сам диалог
+# в «Центре коммуникации». Раньше, если у чата была связанная запись,
+# открывалась карточка сделки — что расходится с логикой проекта:
+# к сделкам привязываются сообщения, а не чаты.
+# База — notify-v88.
+FROM twentycrm/twenty:notify-v88
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v89/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node

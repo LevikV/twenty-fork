@@ -1,0 +1,16 @@
+# v86: иконки в шапке — исправление v85.
+# В v85 компонент NotificationBell рендерился в базовом PageCardHeader, который
+# используется и вне провайдеров приложения (страница входа, скелетоны) —
+# useOpenRecordInSidePanel падал с «ApolloCoreClient not found» и приложение
+# показывало «Sorry, something went wrong».
+# Теперь компонент рендерится только в реальных шапках: журнал, карточка записи,
+# страница (page-layout). База — notify-v84 (новый фронт с морф-фильтром).
+FROM twentycrm/twenty:notify-v84
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v86/front /app/packages/twenty-server/dist/front
+RUN chown -R node:node /app/packages/twenty-server/dist/front
+
+USER node

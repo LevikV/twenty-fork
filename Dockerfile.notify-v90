@@ -1,0 +1,16 @@
+# v90: ссылка «Открыть карточку» в непрочитанных сообщениях + связь по сообщению.
+# Фронт: в строке диалога кнопка открывает сделку в боковой панели.
+# Сервер: /api/notify/chat-list берёт связку последнего сообщения
+# (_soobshchenie.svyazkaId -> _chatTarget), с откатом на связь чата.
+FROM twentycrm/twenty:notify-v89
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist/front
+COPY build-context-v90/front /app/packages/twenty-server/dist/front
+COPY patches/notify-v79/notification.controller.js /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+RUN chown -R node:node /app/packages/twenty-server/dist/front \
+    /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+USER node
