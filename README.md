@@ -33,6 +33,31 @@
 
 Полная пошаговая история — в Obsidian: `10-projects/CRM/Доработки/Пуш уведомления/plan.md`.
 
+Обычный выпуск — одной командой:
+
+```bash
+cd /opt/twenty-crm/repos/twenty-fork
+./scripts/release.sh status                 # что сейчас работает
+./scripts/release.sh release notify-v92     # сборка + деплой + проверки
+./scripts/release.sh release notify-v92 -n  # то же, но только показать план
+./scripts/release.sh rollback               # вернуться на предыдущий образ
+```
+
+Что делает `release`:
+
+1. проверяет свободное место (нужно ≥ 10 %), наличие исходников и `.env`;
+2. собирает фронт в `twenty-v37` (`yarn nx build twenty-front`);
+3. собирает `build-context-vNN/front` и, если нет — `Dockerfile.notify-vNN`
+   поверх текущего образа;
+4. `docker build` нового образа;
+5. пишет `TAG` в `/opt/twenty-crm/self-host/.env` (предыдущий тег — в `.prev-tag`),
+   поднимает `server` и `worker`;
+6. проверяет `healthz`, health контейнера, маршруты `/api/notify/*`
+   (401/403 = контроллер на месте, 404 = потерян) и отдачу бандла.
+
+<details>
+<summary>Ручная сборка (если скрипт недоступен)</summary>
+
 ```bash
 # 1. Исходники: ветка от нужного тега upstream + перенос патчей
 cd /opt/twenty-crm/repos/twenty-v37
@@ -55,6 +80,9 @@ docker build -f Dockerfile.notify-v92 -t twentycrm/twenty:notify-v92 .
 # в /opt/twenty-crm/self-host/.env: TAG=notify-v92
 docker compose up -d server worker   # миграции БД пройдут при старте server
 ```
+
+</details>
+
 
 ## Откат
 
