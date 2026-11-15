@@ -1,0 +1,14 @@
+# Сборка notify-v93: серверный код уведомлений из исходников, без патч-файла.
+# notification.controller.js собран из
+#   twenty-v37/packages/twenty-server/src/modules/notification/notification.controller.ts
+# и заменяет версию, скопированную ранее из patches/notify-v79.
+FROM twentycrm/twenty:notify-v92
+
+USER root
+
+COPY build-context-v93/server/notification.controller.js \
+     /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+RUN chown node:node /app/packages/twenty-server/dist/modules/notification/notification.controller.js
+
+USER node

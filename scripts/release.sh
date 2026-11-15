@@ -26,10 +26,12 @@ PREV_TAG_FILE="$SELF_DIR/.prev-tag"
 MIN_FREE_PERCENT=10
 
 DRY_RUN=0
+REBUILD_SERVER=0
 ARGS=()
 for arg in "$@"; do
   case "$arg" in
     --dry-run|-n) DRY_RUN=1 ;;
+    --server) REBUILD_SERVER=1 ;;
     *) ARGS+=("$arg") ;;
   esac
 done
@@ -99,6 +101,20 @@ build_image() {
   fi
   ok "контекст готов"
 
+  # Серверный код собирается из исходников по флагу --server (долго, 5–10 минут).
+  if [ "$REBUILD_SERVER" = "1" ]; then
+    log "Сборка сервера из исходников"
+    if [ "$DRY_RUN" = "1" ]; then
+      printf '   [dry-run] cd %s && PATH=%s:$PATH yarn nx build twenty-server --skip-nx-cache\n' "$CORE_DIR" "$NODE_BIN"
+      printf '   [dry-run] cp %s/packages/twenty-server/dist/modules/notification/*.js %s/server/\n' "$CORE_DIR" "$ctx"
+    else
+      ( cd "$CORE_DIR" && PATH="$NODE_BIN:$PATH" yarn nx build twenty-server --skip-nx-cache )
+      mkdir -p "$ctx/server"
+      cp "$CORE_DIR"/packages/twenty-server/dist/modules/notification/*.js "$ctx/server/"
+    fi
+    ok "сервер собран, модуль уведомлений в контексте"
+  fi
+
   local ctx_name="build-context-${TAG#notify-}"
   local dockerfile="$FORK_DIR/Dockerfile.$TAG"
   if [ ! -f "$dockerfile" ]; then
@@ -109,20 +125,23 @@ build_image() {
     if [ "$DRY_RUN" = "1" ]; then
       printf '   [dry-run] создать %s (FROM %s:%s)\n' "$dockerfile" "$IMAGE" "$base"
     else
-      cat > "$dockerfile" <<EOF
-# Сборка $TAG: только собранный фронт поверх $base.
-# Серверный код берётся из базового образа (собран из исходников twenty-v37).
-FROM $IMAGE:$base
-
-USER root
-
-RUN rm -rf /app/packages/twenty-server/dist/front
-COPY $ctx_name/front /app/packages/twenty-server/dist/front
-
-RUN chown -R node:node /app/packages/twenty-server/dist/front
-
-USER node
-EOF
+      {
+        echo "# Сборка $TAG: собранный фронт поверх $base."
+        echo "FROM $IMAGE:$base"
+        echo
+        echo "USER root"
+        echo
+        echo "RUN rm -rf /app/packages/twenty-server/dist/front"
+        echo "COPY $ctx_name/front /app/packages/twenty-server/dist/front"
+        if [ -d "$ctx/server" ]; then
+          echo "COPY $ctx_name/server/notification.controller.js \\"
+          echo "     /app/packages/twenty-server/dist/modules/notification/notification.controller.js"
+        fi
+        echo
+        echo "RUN chown -R node:node /app/packages/twenty-server/dist/front"
+        echo
+        echo "USER node"
+      } > "$dockerfile"
     fi
     ok "Dockerfile создан"
   else
@@ -201,8 +220,15 @@ check_health() {
     fi
   done
 
-  # Фронт отдаётся: index.html с ссылкой на бандл
-  if curl -s "$APP_URL/" | grep -q 'assets/index-'; then
+  # Фронт отдаётся: index.html со ссылкой на бандл.
+  # Сразу после старта сервер может отдать страницу без ассетов — повторяем.
+  local html=""
+  for attempt in $(seq 1 12); do
+    html=$(curl -s "$APP_URL/" || true)
+    echo "$html" | grep -q 'assets/index-' && break
+    sleep 5
+  done
+  if echo "$html" | grep -q 'assets/index-'; then
     ok "фронт отдаёт бандл"
   else
     warn "в ответе / не найден assets/index-* — проверь фронт"
