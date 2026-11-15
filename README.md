@@ -113,10 +113,12 @@ git show <коммит>:Dockerfile.notify-v85        # посмотреть со
 
 ```
 twenty-fork/
-├── docker/
-│   └── docker-compose.yml        # compose-конфиг (зеркало /opt/twenty-crm/self-host)
-├── config/
-│   └── .env.example              # образец конфигурации
+├── infra/
+│   ├── nginx/                    # конфиги nginx: сайт CRM, имя файла, лимиты SMS
+│   ├── self-host/                # боевой docker-compose + шаблон .env
+│   └── README.md                 # что куда копируется и как
+├── scripts/
+│   └── release.sh                # сборка, деплой, проверки, откат
 ├── patches/
 │   ├── notify-v79/               # серверный код, применённый в v79+
 │   └── notify-v68/…              # предыдущие версии (история)

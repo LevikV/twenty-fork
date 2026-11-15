@@ -9,11 +9,16 @@ services:
       - "8093:3000"
     environment:
       NODE_PORT: 3000
+      # Центр уведомлений: true — писать историю, false — только пуши (без пересборки)
+      NOTIFY_PERSIST: ${NOTIFY_PERSIST:-true}
       PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:-postgres}@${PG_DATABASE_HOST:-db}:${PG_DATABASE_PORT:-5432}/default
       SERVER_URL: ${SERVER_URL}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       DISABLE_DB_MIGRATIONS: ${DISABLE_DB_MIGRATIONS}
       DISABLE_CRON_JOBS_REGISTRATION: ${DISABLE_CRON_JOBS_REGISTRATION}
+      # Временно, на время миграции истории звонков (снять после):
+      APPLICATION_API_RATE_LIMITING_LIMIT: ${APPLICATION_API_RATE_LIMITING_LIMIT:-500}
+      APPLICATION_API_RATE_LIMITING_TTL_IN_MS: ${APPLICATION_API_RATE_LIMITING_TTL_IN_MS:-60000}
 
       STORAGE_TYPE: ${STORAGE_TYPE}
       STORAGE_S3_REGION: ${STORAGE_S3_REGION}
@@ -23,6 +28,14 @@ services:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       FALLBACK_ENCRYPTION_KEY: ${FALLBACK_ENCRYPTION_KEY}
       APP_SECRET: ${APP_SECRET:-}
+      LOGIC_FUNCTION_TYPE: ${LOGIC_FUNCTION_TYPE}
+      # Токен подключения телефонов к приватному SMS-шлюзу (показывается в «Мои каналы»)
+      SMS_GATEWAY_PRIVATE_TOKEN: ${SMS_GATEWAY_PRIVATE_TOKEN:-}
+      # Ключ подписи вебхуков SMS-шлюза. Пусто — подпись не проверяется.
+      SMS_WEBHOOK_SECRET: ${SMS_WEBHOOK_SECRET:-}
+      # Секрет в адресе входящего вебхука (?k=...).
+      SMS_INBOUND_SECRET: ${SMS_INBOUND_SECRET:-}
+      YARN_HTTP_TIMEOUT: 300000
       # MESSAGING_PROVIDER_GMAIL_ENABLED: ${MESSAGING_PROVIDER_GMAIL_ENABLED}
       # CALENDAR_PROVIDER_GOOGLE_ENABLED: ${CALENDAR_PROVIDER_GOOGLE_ENABLED}
       # AUTH_GOOGLE_CLIENT_ID: ${AUTH_GOOGLE_CLIENT_ID}
@@ -69,6 +82,9 @@ services:
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       DISABLE_DB_MIGRATIONS: "true" # it already runs on the server
       DISABLE_CRON_JOBS_REGISTRATION: "true" # it already runs on the server
+      # Временно, на время миграции истории звонков (снять после):
+      APPLICATION_API_RATE_LIMITING_LIMIT: ${APPLICATION_API_RATE_LIMITING_LIMIT:-500}
+      APPLICATION_API_RATE_LIMITING_TTL_IN_MS: ${APPLICATION_API_RATE_LIMITING_TTL_IN_MS:-60000}
 
       STORAGE_TYPE: ${STORAGE_TYPE}
       STORAGE_S3_REGION: ${STORAGE_S3_REGION}
@@ -78,6 +94,14 @@ services:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       FALLBACK_ENCRYPTION_KEY: ${FALLBACK_ENCRYPTION_KEY}
       APP_SECRET: ${APP_SECRET:-}
+      LOGIC_FUNCTION_TYPE: ${LOGIC_FUNCTION_TYPE}
+      # Токен подключения телефонов к приватному SMS-шлюзу (показывается в «Мои каналы»)
+      SMS_GATEWAY_PRIVATE_TOKEN: ${SMS_GATEWAY_PRIVATE_TOKEN:-}
+      # Ключ подписи вебхуков SMS-шлюза. Пусто — подпись не проверяется.
+      SMS_WEBHOOK_SECRET: ${SMS_WEBHOOK_SECRET:-}
+      # Секрет в адресе входящего вебхука (?k=...).
+      SMS_INBOUND_SECRET: ${SMS_INBOUND_SECRET:-}
+      YARN_HTTP_TIMEOUT: 300000
       # MESSAGING_PROVIDER_GMAIL_ENABLED: ${MESSAGING_PROVIDER_GMAIL_ENABLED}
       # CALENDAR_PROVIDER_GOOGLE_ENABLED: ${CALENDAR_PROVIDER_GOOGLE_ENABLED}
       # AUTH_GOOGLE_CLIENT_ID: ${AUTH_GOOGLE_CLIENT_ID}
