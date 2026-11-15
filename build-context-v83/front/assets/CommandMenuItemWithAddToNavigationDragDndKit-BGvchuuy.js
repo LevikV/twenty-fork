@@ -1,1 +1,0 @@
-import{t as o}from"./jsx-runtime-BmDUFisN.js";import{i as t}from"./react-Bt7Je5DD.js";import{Oi as d}from"./index-BTwh_iuN.js";var m=o(),u=({id:r,dragIndex:e,menuItemContent:a})=>{const{ref:i}=t({id:r,data:{sourceDroppableId:d,sourceIndex:e},disabled:!1,feedback:"clone"});return(0,m.jsx)("div",{ref:i,children:a})};export{u as CommandMenuItemWithAddToNavigationDragDndKit};

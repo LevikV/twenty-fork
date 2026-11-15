@@ -8,8 +8,8 @@ docker/data/
 docker/volumes/
 
 # Артефакты сборки notify-образов (генерируются при сборке, см. README)
+# patches/ — НЕ игнорируется: там лежит серверный код, который копируется в образ
 build-context*/
-patches/
 deps/
 *.tar
 

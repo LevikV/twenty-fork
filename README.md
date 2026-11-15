@@ -1,46 +1,80 @@
 # Twenty CRM — Форк Kplus79
 
 Форк [Twenty CRM](https://github.com/twentyhq/twenty) с доработками для сервисного центра «Картридж+»:
-**push-уведомления** (WebSocket + звук) и фиксы фронтенда.
+**push-уведомления** (WebSocket + звук), фиксы фронтенда, правила записи.
+Исходники ядра (ветка `feature/push-notifications-v37`) — в репозитории
+[LevikV/twenty](https://github.com/LevikV/twenty).
 
-Исходники доработок (ветки `feature/push-notifications-*`) — в репозитории [LevikV/twenty](https://github.com/LevikV/twenty).
-Здесь — Docker-конфиги и процедура сборки кастомных образов.
+Здесь — Docker-конфиги, серверные патчи и процедура сборки образов.
 
-## Сборка образа с патчами (notify-vNN)
+## Где что лежит
 
-Процесс отработан на `v2.37.4` (notify-v41, 2026-09-03). Полная пошаговая история — в Obsidian:
-`10-projects/CRM/Доработки/Пуш уведомления/plan.md`.
+| Что | Где |
+|---|---|
+| Исходники ядра (TS, фронт и сервер) | `LevikV/twenty`, ветка `feature/push-notifications-v37` |
+| Готовый серверный код, который копируется в образ | `patches/<версия>/` — **в git, не игнорируется** |
+| Рецепт сборки текущей версии | `Dockerfile.notify-v91` |
+| Рецепт предыдущей версии (откат) | `Dockerfile.notify-v90` |
+| База цепочки сборок | `Dockerfile.notify-v44` (от `twentycrm/twenty:v2.37.4`) |
+| Собранные артефакты сборки | `build-context-vNN/` — **не в git**, генерируются |
 
-Кратко:
+## Правило: патчи только файлами в `patches/`
+
+`patches/` раньше был в `.gitignore` — из-за этого новый файл патча молча не попадал в git.
+Теперь **любой серверный код, который копируется в образ, лежит в git**:
+
+- правим/добавляем файл в `patches/<версия>/` (например `patches/notify-v79/notification.controller.js`);
+- имя папки = версия образа, в котором файл впервые применился;
+- `Dockerfile.notify-vNN` копирует конкретный файл из `patches/`.
+
+Игнорируются только `build-context*/`, `deps/` и `*.tar` — это артефакты.
+
+## Сборка образа (notify-vNN)
+
+Полная пошаговая история — в Obsidian: `10-projects/CRM/Доработки/Пуш уведомления/plan.md`.
 
 ```bash
-# 1. Ветка от нужного тега upstream + перенос патчей (в worktree, чтобы не трогать рабочую копию)
-cd /opt/twenty-crm/repos/twenty-source
-git worktree add -b feature/push-notifications-v37 /opt/twenty-crm/repos/twenty-v37 twenty/v2.37.4
+# 1. Исходники: ветка от нужного тега upstream + перенос патчей
 cd /opt/twenty-crm/repos/twenty-v37
-git cherry-pick <коммиты патчей>
-# Конфликт package.json: новые версии nest (HEAD) + наши зависимости
-# yarn.lock: git checkout <тег> -- yarn.lock && yarn install
+git checkout feature/push-notifications-v37
+git pull
 
 # 2. Сборка фронта и сервера на хосте
 yarn nx build twenty-server
 yarn nx build twenty-front --skip-nx-cache
-# ENOSPC file watchers при 2+ деревьях: sysctl -w fs.inotify.max_user_watches=1048576
+# ENOSPC file watchers: sysctl -w fs.inotify.max_user_watches=1048576
 
-# 3. Build-context (не коммитится, генерируется)
-mkdir -p build-context-v41/{front,patches,deps}
-cp -r packages/twenty-front/build/. build-context-v41/front/          # собранный фронт
-cp packages/twenty-server/dist/modules/notification/*.js \
-   packages/twenty-server/dist/modules/modules.module.js build-context-v41/patches/
-# deps: node_modules-пакеты (websockets, socket.io, engine.io, ws, cors...) — cp с сохранением структуры @nestjs/
+# 3. Build-context (не коммитится)
+mkdir -p build-context-v92/front
+cp -r packages/twenty-front/build/. build-context-v92/front/
 
-# 4. Docker build
-docker build -f Dockerfile.notify-v41 -t twentycrm/twenty:notify-v41 build-context-v41/
+# 4. Образ: новый Dockerfile = FROM предыдущего + COPY контекста и патчей
+docker build -f Dockerfile.notify-v92 -t twentycrm/twenty:notify-v92 .
 
 # 5. Деплой
-# в /opt/twenty-crm/self-host/.env: TAG=notify-v41
+# в /opt/twenty-crm/self-host/.env: TAG=notify-v92
 docker compose up -d server worker   # миграции БД пройдут при старте server
 ```
+
+## Откат
+
+```bash
+# в /opt/twenty-crm/self-host/.env: TAG=notify-v90
+docker compose up -d server worker
+```
+
+Образы `notify-v82 … notify-v91` хранятся локально на сервере — откат не требует пересборки.
+
+## История сборок
+
+Удалённые `Dockerfile.notify-vNN` (v7 … v89) остаются в истории git:
+
+```bash
+git log --oneline -- Dockerfile.notify-v85     # найти коммит
+git show <коммит>:Dockerfile.notify-v85        # посмотреть содержимое
+```
+
+Контексты удалённых версий не хранятся: собранный фронт уже внутри соответствующего образа.
 
 ⚠️ **Частые грабли апгрейда:** если `Upgrade failed` на workspace-командах — проверь корзину
 (`deletedAt IS NOT NULL`) в `core."viewField"` / `core."view"`: soft-deleted строки держат
@@ -55,14 +89,18 @@ twenty-fork/
 │   └── docker-compose.yml        # compose-конфиг (зеркало /opt/twenty-crm/self-host)
 ├── config/
 │   └── .env.example              # образец конфигурации
-├── Dockerfile.notify-v7          # ранние сборки (v2.24.1, история)
-├── Dockerfile.notify-v32         # сборка на базе v2.32.0 (история)
-├── Dockerfile.notify-v41         # актуальная сборка на базе v2.37.4
-├── build-context-v41/            # генерируется при сборке (в .gitignore)
+├── patches/
+│   ├── notify-v79/               # серверный код, применённый в v79+
+│   └── notify-v68/…              # предыдущие версии (история)
+├── Dockerfile.notify-v44         # база цепочки (v2.37.4)
+├── Dockerfile.notify-v90         # предыдущая версия (откат)
+├── Dockerfile.notify-v91         # текущая
+├── build-context-v90/            # генерируется (в .gitignore)
+├── build-context-v91/            # генерируется (в .gitignore)
 └── README.md
 ```
 
 ## Версия
 
-Установлена: **v2.37.4** (notify-v41, сборка 2026-09-03)
+Установлена: **v2.37.4**, образ **notify-v91** (сборка 2026-11-14).
 Сервер: https://crm.kplus79.ru

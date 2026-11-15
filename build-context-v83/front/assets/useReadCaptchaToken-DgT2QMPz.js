@@ -1,1 +1,0 @@
-import{o as r}from"./chunk-ChpBd9eV.js";import{t as o}from"./react-M6yZRsSc.js";import{a as e}from"./react-BWmhvO0Y.js";import{t as s}from"./isDefined-Dtu5EYqP-_d6Dqdoe.js";import{pc as m}from"./index-BTwh_iuN.js";var p=r(o(),1),k=()=>{const t=e();return{readCaptchaToken:(0,p.useCallback)(()=>{const a=t.get(m.atom);if(s(a))return a},[t])}};export{k as t};

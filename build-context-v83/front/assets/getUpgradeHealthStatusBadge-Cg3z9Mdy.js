@@ -1,1 +1,0 @@
-import{t as r}from"./dist-Cg5OofxW.js";import{_n as e}from"./index-BTwh_iuN.js";var o=a=>{switch(a){case e.UP_TO_DATE:return{color:"green",label:r._({id:"j5CWO4"})};case e.BEHIND:return{color:"orange",label:r._({id:"+MqoSu"})};case e.FAILED:return{color:"red",label:r._({id:"7Bj3x9"})};default:return{color:"gray",label:r._({id:"Ef7StM"})}}};export{o as t};
