@@ -13,8 +13,8 @@
 |---|---|
 | Исходники ядра (TS, фронт и сервер) | `LevikV/twenty`, ветка `feature/push-notifications-v37` |
 | Готовый серверный код, который копируется в образ | `patches/<версия>/` — **в git, не игнорируется** |
-| Рецепт сборки текущей версии | `Dockerfile.notify-v91` |
-| Рецепт предыдущей версии (откат) | `Dockerfile.notify-v90` |
+| Рецепт сборки текущей версии | `Dockerfile.notify-v92` |
+| Рецепт предыдущей версии (откат) | `Dockerfile.notify-v91` |
 | База цепочки сборок | `Dockerfile.notify-v44` (от `twentycrm/twenty:v2.37.4`) |
 | Собранные артефакты сборки | `build-context-vNN/` — **не в git**, генерируются |
 
@@ -87,11 +87,11 @@ docker compose up -d server worker   # миграции БД пройдут пр
 ## Откат
 
 ```bash
-# в /opt/twenty-crm/self-host/.env: TAG=notify-v90
+# в /opt/twenty-crm/self-host/.env: TAG=notify-v92
 docker compose up -d server worker
 ```
 
-Образы `notify-v82 … notify-v91` хранятся локально на сервере — откат не требует пересборки.
+Образы `notify-v82 … notify-v92` хранятся локально на сервере — откат не требует пересборки.
 
 ## История сборок
 
@@ -123,14 +123,14 @@ twenty-fork/
 │   ├── notify-v79/               # серверный код, применённый в v79+
 │   └── notify-v68/…              # предыдущие версии (история)
 ├── Dockerfile.notify-v44         # база цепочки (v2.37.4)
-├── Dockerfile.notify-v90         # предыдущая версия (откат)
-├── Dockerfile.notify-v91         # текущая
-├── build-context-v90/            # генерируется (в .gitignore)
+├── Dockerfile.notify-v91         # предыдущая версия (откат)
+├── Dockerfile.notify-v92         # текущая
 ├── build-context-v91/            # генерируется (в .gitignore)
+├── build-context-v92/            # генерируется (в .gitignore)
 └── README.md
 ```
 
 ## Версия
 
-Установлена: **v2.37.4**, образ **notify-v91** (сборка 2026-11-14).
+Установлена: **v2.37.4**, образ **notify-v92** (сборка 2026-11-15 через `scripts/release.sh`).
 Сервер: https://crm.kplus79.ru
