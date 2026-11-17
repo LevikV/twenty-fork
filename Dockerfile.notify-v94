@@ -1,0 +1,43 @@
+# Сборка notify-v94: Twenty 2.58.0 + доработки ядра.
+#
+# Контекст сборки — корень этого репозитория (так его задаёт release.sh),
+# готовые каталоги лежат в build-context-v94/.
+#
+# В базовом образе 2.58 нет пакетов сокетов, без них модуль уведомлений
+# падает на старте (can't resolve dependencies of the JwtAuthGuard) —
+# доустанавливаем только те, которых в образе ещё нет.
+
+FROM node:26-alpine AS sockdeps
+
+WORKDIR /sockdeps
+RUN npm install --omit=dev --no-audit --no-fund \
+      @nestjs/websockets@12.3.0 \
+      @nestjs/platform-socket.io@12.3.0 \
+      socket.io@4.8.3
+
+FROM twentycrm/twenty:v2.58.0
+
+USER root
+
+RUN rm -rf /app/packages/twenty-server/dist
+
+COPY build-context-v94/dist /app/packages/twenty-server/dist
+COPY build-context-v94/front /app/packages/twenty-server/dist/front
+
+COPY --from=sockdeps /sockdeps/node_modules /tmp/sockdeps
+
+RUN for d in /tmp/sockdeps/*; do \
+      n=$(basename "$d"); \
+      if [ "$n" = "@nestjs" ]; then \
+        for s in "$d"/*; do \
+          sn=$(basename "$s"); \
+          [ -e "/app/node_modules/@nestjs/$sn" ] || cp -a "$s" "/app/node_modules/@nestjs/$sn"; \
+        done; \
+      elif [ ! -e "/app/node_modules/$n" ]; then \
+        cp -a "$d" "/app/node_modules/$n"; \
+      fi; \
+    done \
+ && rm -rf /tmp/sockdeps \
+ && chown -R node:node /app/packages/twenty-server/dist /app/node_modules
+
+USER node

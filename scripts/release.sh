@@ -11,8 +11,9 @@
 #
 #   --dry-run  — показать, что будет сделано, ничего не выполняя
 #
-# Требования: собранный фронт берётся из twenty-v37 (Node 24), образ собирается
-# из этого репозитория (контекст = корень репозитория, Dockerfile — в нём же).
+# Требования: собранный фронт берётся из twenty-v37 (Node 26 для 2.58,
+# Node 24 для старой ветки), образ собирается из этого репозитория
+# (контекст = корень репозитория, Dockerfile — в нём же).
 set -euo pipefail
 
 FORK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -104,8 +105,15 @@ build_image() {
 
   log "Контекст сборки: build-context-${TAG#notify-}"
   local ctx="$FORK_DIR/build-context-${TAG#notify-}"
-  [ -d "$ctx" ] && [ "$DRY_RUN" = "0" ] && rm -rf "$ctx"
-  run mkdir -p "$ctx/front"
+  # Готовый dist не затираем: с 2.58 образ собирается из полного серверного
+  # dist, а не из одного модуля уведомлений. Пересобрать его можно флагом
+  # --server, иначе берётся уже лежащий в контексте.
+  if [ "$DRY_RUN" = "0" ]; then
+    rm -rf "$ctx/front" "$ctx/server"
+    mkdir -p "$ctx"
+  else
+    run mkdir -p "$ctx/front"
+  fi
   if [ "$DRY_RUN" = "1" ]; then
     printf '   [dry-run] cp -r %s/packages/twenty-front/build/. %s/front/\n' "$CORE_DIR" "$ctx"
   else
@@ -118,13 +126,13 @@ build_image() {
     log "Сборка сервера из исходников"
     if [ "$DRY_RUN" = "1" ]; then
       printf '   [dry-run] cd %s && PATH=%s:$PATH yarn nx build twenty-server --skip-nx-cache\n' "$CORE_DIR" "$NODE_BIN"
-      printf '   [dry-run] cp %s/packages/twenty-server/dist/modules/notification/*.js %s/server/\n' "$CORE_DIR" "$ctx"
+      printf '   [dry-run] cp -r %s/packages/twenty-server/dist %s/dist\n' "$CORE_DIR" "$ctx"
     else
       ( cd "$CORE_DIR" && PATH="$NODE_BIN:$PATH" yarn nx build twenty-server --skip-nx-cache )
-      mkdir -p "$ctx/server"
-      cp "$CORE_DIR"/packages/twenty-server/dist/modules/notification/*.js "$ctx/server/"
+      rm -rf "$ctx/dist"
+      cp -r "$CORE_DIR/packages/twenty-server/dist" "$ctx/dist"
     fi
-    ok "сервер собран, модуль уведомлений в контексте"
+    ok "сервер собран, полный dist в контексте"
   fi
 
   local ctx_name="build-context-${TAG#notify-}"
@@ -138,19 +146,25 @@ build_image() {
       printf '   [dry-run] создать %s (FROM %s:%s)\n' "$dockerfile" "$IMAGE" "$base"
     else
       {
-        echo "# Сборка $TAG: собранный фронт поверх $base."
+        echo "# Сборка $TAG: собрана автоматически поверх $base."
         echo "FROM $IMAGE:$base"
         echo
         echo "USER root"
         echo
-        echo "RUN rm -rf /app/packages/twenty-server/dist/front"
-        echo "COPY $ctx_name/front /app/packages/twenty-server/dist/front"
-        if [ -d "$ctx/server" ]; then
-          echo "COPY $ctx_name/server/notification.controller.js \\"
-          echo "     /app/packages/twenty-server/dist/modules/notification/notification.controller.js"
+        if [ -d "$ctx/dist" ]; then
+          # 2.58+: сервер собран целиком, каталог dist заменяется полностью.
+          echo "RUN rm -rf /app/packages/twenty-server/dist"
+          echo "COPY $ctx_name/dist /app/packages/twenty-server/dist"
+          echo "COPY $ctx_name/front /app/packages/twenty-server/dist/front"
+          echo
+          echo "RUN chown -R node:node /app/packages/twenty-server/dist"
+        else
+          # Старая схема: только фронт и один контроллер.
+          echo "RUN rm -rf /app/packages/twenty-server/dist/front"
+          echo "COPY $ctx_name/front /app/packages/twenty-server/dist/front"
+          echo
+          echo "RUN chown -R node:node /app/packages/twenty-server/dist/front"
         fi
-        echo
-        echo "RUN chown -R node:node /app/packages/twenty-server/dist/front"
         echo
         echo "USER node"
       } > "$dockerfile"
