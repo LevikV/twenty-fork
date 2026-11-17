@@ -18,7 +18,19 @@ set -euo pipefail
 FORK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CORE_DIR="${CORE_DIR:-/opt/twenty-crm/repos/twenty-v37}"
 SELF_DIR="${SELF_DIR:-/opt/twenty-crm/self-host}"
-NODE_BIN="${NODE_BIN:-/opt/node24/bin}"
+# Node для сборки: 2.58 требует ^26.5.1, поэтому по умолчанию берём Node 26.
+# Для сборки старой ветки 2.37 передавай NODE_BIN=/opt/node24/bin явно.
+NODE_BIN="${NODE_BIN:-/opt/node26/bin}"
+
+if [ ! -x "$NODE_BIN/node" ]; then
+  if [ -x /opt/node24/bin/node ]; then
+    printf '⚠ в %s нет node — беру /opt/node24/bin\n' "$NODE_BIN" >&2
+    NODE_BIN=/opt/node24/bin
+  else
+    printf '✗ не найден node в %s\n' "$NODE_BIN" >&2
+    exit 1
+  fi
+fi
 IMAGE="twentycrm/twenty"
 HEALTH_URL="http://127.0.0.1:8093/healthz"
 APP_URL="http://127.0.0.1:8093"
