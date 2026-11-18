@@ -9,6 +9,8 @@
 #   ./scripts/release.sh release <tag>           — build + deploy + check
 #   ./scripts/release.sh rollback                — вернуться на предыдущий тег
 #
+#   --server   — пересобрать серверный dist из исходников (иначе берётся готовый)
+#   --no-front — не пересобирать фронт, взять его из контекста предыдущего тега
 #   --dry-run  — показать, что будет сделано, ничего не выполняя
 #
 # Требования: собранный фронт берётся из twenty-v37 (Node 26 для 2.58,
@@ -40,11 +42,13 @@ MIN_FREE_PERCENT=10
 
 DRY_RUN=0
 REBUILD_SERVER=0
+SKIP_FRONT=0
 ARGS=()
 for arg in "$@"; do
   case "$arg" in
     --dry-run|-n) DRY_RUN=1 ;;
     --server) REBUILD_SERVER=1 ;;
+    --no-front) SKIP_FRONT=1 ;;
     *) ARGS+=("$arg") ;;
   esac
 done
@@ -95,26 +99,45 @@ build_image() {
   check_tag
   preflight
 
-  log "Сборка фронта ($TAG)"
-  if [ "$DRY_RUN" = "1" ]; then
-    printf '   [dry-run] cd %s && PATH=%s:$PATH yarn nx build twenty-front --skip-nx-cache\n' "$CORE_DIR" "$NODE_BIN"
+  local ctx="$FORK_DIR/build-context-${TAG#notify-}"
+  local prev_tag prev_ctx
+  prev_tag=$(current_tag)
+  prev_ctx="$FORK_DIR/build-context-${prev_tag#notify-}"
+
+  # --no-front: серверная правка не требует пересборки бандла (это 6+ минут
+  # и пик по памяти). Берём готовый фронт из контекста предыдущего тега.
+  if [ "$SKIP_FRONT" = "1" ]; then
+    log "Фронт не пересобираем (--no-front)"
+    [ -d "$prev_ctx/front" ] || die "нет готового фронта: $prev_ctx/front (собери без --no-front)"
+    ok "фронт возьмём из $(basename "$prev_ctx")"
   else
-    ( cd "$CORE_DIR" && PATH="$NODE_BIN:$PATH" yarn nx build twenty-front --skip-nx-cache )
+    log "Сборка фронта ($TAG)"
+    if [ "$DRY_RUN" = "1" ]; then
+      printf '   [dry-run] cd %s && PATH=%s:$PATH yarn nx build twenty-front --skip-nx-cache\n' "$CORE_DIR" "$NODE_BIN"
+    else
+      ( cd "$CORE_DIR" && PATH="$NODE_BIN:$PATH" yarn nx build twenty-front --skip-nx-cache )
+    fi
+    ok "фронт собран"
   fi
-  ok "фронт собран"
 
   log "Контекст сборки: build-context-${TAG#notify-}"
-  local ctx="$FORK_DIR/build-context-${TAG#notify-}"
   # Готовый dist не затираем: с 2.58 образ собирается из полного серверного
   # dist, а не из одного модуля уведомлений. Пересобрать его можно флагом
   # --server, иначе берётся уже лежащий в контексте.
   if [ "$DRY_RUN" = "0" ]; then
     rm -rf "$ctx/front" "$ctx/server"
-    mkdir -p "$ctx"
+    mkdir -p "$ctx/front"
   else
     run mkdir -p "$ctx/front"
   fi
-  if [ "$DRY_RUN" = "1" ]; then
+
+  if [ "$SKIP_FRONT" = "1" ]; then
+    if [ "$DRY_RUN" = "1" ]; then
+      printf '   [dry-run] cp -r %s/front/. %s/front/\n' "$prev_ctx" "$ctx"
+    elif [ "$prev_ctx" != "$ctx" ]; then
+      cp -r "$prev_ctx/front/." "$ctx/front/"
+    fi
+  elif [ "$DRY_RUN" = "1" ]; then
     printf '   [dry-run] cp -r %s/packages/twenty-front/build/. %s/front/\n' "$CORE_DIR" "$ctx"
   else
     cp -r "$CORE_DIR/packages/twenty-front/build/." "$ctx/front/"
